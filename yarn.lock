@@ -5,9 +5,9 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@alis/portfolio-api@workspace:.":
+"@alishenriques/portfolio-api@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@alis/portfolio-api@workspace:."
+  resolution: "@alishenriques/portfolio-api@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.36.0"
     "@neondatabase/serverless": "npm:^1.0.1"

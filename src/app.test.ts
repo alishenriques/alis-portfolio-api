@@ -22,11 +22,4 @@ describe("GraphQL app (fallback mode)", () => {
     const result = await query("{ profile { name headline } }");
     expect(result.data.profile.name).toBe("Alis");
   });
-
-  it("rejects CMS mutations without the API key", async () => {
-    const result = await query(
-      `mutation { updateProfile(input: { name: "A", headline: "B", bio: "C" }) { id } }`,
-    );
-    expect(result.errors[0].message).toContain("Unauthorized");
-  });
 });

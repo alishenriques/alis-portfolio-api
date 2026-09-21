@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate.ts"
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
@@ -24,6 +25,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@eslint/js": "^9.36.0",
     "@types/node": "^24.5.2",
     "drizzle-kit": "^0.31.4",

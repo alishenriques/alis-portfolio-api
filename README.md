@@ -16,7 +16,7 @@ Sem `DATABASE_URL`, a API responde com dados de fallback.
 
 ## Scripts
 
-`yarn dev` · `yarn lint` · `yarn typecheck` · `yarn test` · `yarn db:generate` · `yarn db:migrate`
+`yarn dev` · `yarn lint` · `yarn typecheck` · `yarn test` · `yarn db:generate` · `yarn db:migrate` · `yarn db:seed`
 
 ## Variáveis de ambiente
 
@@ -27,3 +27,16 @@ Sem `DATABASE_URL`, a API responde com dados de fallback.
 | `CLOUDINARY_*` | Credenciais do Cloudinary (opcionais) |
 | `PORT` | Porta local (padrão 4000) |
 | `CORS_ORIGIN` | Origem permitida (padrão `http://localhost:3000`) |
+
+## Operações do CMS
+
+Todas as mutations exigem o header `x-cms-key`.
+
+| Mutation | O que faz |
+|---|---|
+| `updateProfile` | Cria/atualiza o perfil (linha única) |
+| `upsertProject` | Cria ou substitui o projeto pelo `slug` |
+| `deleteProject` | Remove um projeto |
+| `createUploadSignature` | Parâmetros assinados para upload direto ao Cloudinary |
+
+As queries públicas só retornam projetos publicados; com a chave do CMS, rascunhos também aparecem.

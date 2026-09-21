@@ -9,6 +9,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@alishenriques/portfolio-api@workspace:."
   dependencies:
+    "@electric-sql/pglite": "npm:^0.5.8"
     "@eslint/js": "npm:^9.36.0"
     "@neondatabase/serverless": "npm:^1.0.1"
     "@types/node": "npm:^24.5.2"
@@ -31,6 +32,13 @@ __metadata:
   version: 0.10.2
   resolution: "@drizzle-team/brocli@npm:0.10.2"
   checksum: 10c0/3d8b99d680f0b14fea32b45c59b938b6665e0840cc67f04801b1aa3c6747da3c7d01c00e321645034fa100abdba7e0c20ce07cf46fc2ca769ee4cafd97562484
+  languageName: node
+  linkType: hard
+
+"@electric-sql/pglite@npm:^0.5.8":
+  version: 0.5.8
+  resolution: "@electric-sql/pglite@npm:0.5.8"
+  checksum: 10c0/02af377bb73428c1fb4559683dac0a4236d62320d5cda62ad4fc45d662a74fb011f767a161cb52b9160df734066376fc80f0d1506c2bbe9506490753fa12b532
   languageName: node
   linkType: hard
 

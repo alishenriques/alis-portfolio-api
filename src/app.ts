@@ -1,13 +1,18 @@
 import { createYoga } from "graphql-yoga";
 import { createContext } from "./context.js";
-import { createDatabase } from "./db/client.js";
+import { createDatabase, type Database } from "./db/client.js";
 import { schema } from "./graphql/schema.js";
-import { createCloudinary } from "./lib/cloudinary.js";
+import { createCloudinary, type CloudinaryClient } from "./lib/cloudinary.js";
 import { loadEnv, type Env } from "./schemas/domain.js";
 
-export function createApp(env: Env = loadEnv()) {
-  const db = createDatabase(env);
-  const cloudinary = createCloudinary(env);
+export type AppDependencies = {
+  db?: Database | null;
+  cloudinary?: CloudinaryClient | null;
+};
+
+export function createApp(env: Env = loadEnv(), deps: AppDependencies = {}) {
+  const db = deps.db !== undefined ? deps.db : createDatabase(env);
+  const cloudinary = deps.cloudinary !== undefined ? deps.cloudinary : createCloudinary(env);
 
   return createYoga({
     schema,

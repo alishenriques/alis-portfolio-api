@@ -44,6 +44,25 @@ export const updateProfileInputSchema = z.object({
   avatarUrl: z.string().url().nullable().optional(),
 });
 
+export const slugSchema = z
+  .string()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug must be lowercase kebab-case");
+
+export const upsertProjectInputSchema = z.object({
+  slug: slugSchema,
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  body: z.string().default(""),
+  coverUrl: z.string().url().nullable().optional(),
+  tags: z.array(z.string().min(1)).default([]),
+  featured: z.boolean().default(false),
+  publishedAt: z.string().datetime().nullable().optional(),
+  sortOrder: z.number().int().default(0),
+});
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
+export type UpsertProjectInput = z.infer<typeof upsertProjectInputSchema>;

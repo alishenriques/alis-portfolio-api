@@ -1,19 +1,19 @@
 import type { YogaInitialContext } from "graphql-yoga";
 import type { Database } from "./db/client.js";
+import type { CloudinaryClient } from "./lib/cloudinary.js";
 import type { Env } from "./schemas/domain.js";
-import type { v2 as Cloudinary } from "cloudinary";
 
 export type AppContext = {
   env: Env;
   db: Database | null;
-  cloudinary: typeof Cloudinary | null;
+  cloudinary: CloudinaryClient | null;
   isCmsAuthorized: boolean;
 };
 
 export function createContext(
   env: Env,
   db: Database | null,
-  cloudinary: typeof Cloudinary | null,
+  cloudinary: CloudinaryClient | null,
 ) {
   return function context(initial: YogaInitialContext): AppContext {
     const header = initial.request.headers.get("x-cms-key");

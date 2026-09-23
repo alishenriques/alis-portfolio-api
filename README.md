@@ -37,6 +37,8 @@ Todas as mutations exigem o header `x-cms-key`.
 | `updateProfile` | Cria/atualiza o perfil (linha única) |
 | `upsertProject` | Cria ou substitui o projeto pelo `slug` |
 | `deleteProject` | Remove um projeto |
+| `upsertExperience` | Cria (sem `id`) ou edita (com `id`) uma experiência profissional |
+| `deleteExperience` | Remove uma experiência |
 | `createUploadSignature` | Parâmetros assinados para upload direto ao Cloudinary |
 
-As queries públicas só retornam projetos publicados; com a chave do CMS, rascunhos também aparecem.
+As queries públicas só retornam projetos publicados; com a chave do CMS, rascunhos também aparecem. `experiences` não tem rascunho: toda entrada salva já é pública.

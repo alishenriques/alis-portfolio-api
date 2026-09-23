@@ -62,7 +62,40 @@ export const upsertProjectInputSchema = z.object({
   sortOrder: z.number().int().default(0),
 });
 
+export const yearMonthSchema = z
+  .string()
+  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "must be in YYYY-MM format");
+
+export const experienceSchema = z.object({
+  id: z.string(),
+  company: z.string().min(1),
+  companyLogoUrl: z.string().url().nullable(),
+  role: z.string().min(1),
+  startDate: yearMonthSchema,
+  endDate: yearMonthSchema.nullable(),
+  description: z.string().min(1),
+  sortOrder: z.number().int(),
+});
+
+export const upsertExperienceInputSchema = z
+  .object({
+    id: z.string().min(1).optional(),
+    company: z.string().min(1),
+    companyLogoUrl: z.string().url().nullable().optional(),
+    role: z.string().min(1),
+    startDate: yearMonthSchema,
+    endDate: yearMonthSchema.nullable().optional(),
+    description: z.string().min(1),
+    sortOrder: z.number().int().default(0),
+  })
+  .refine((input) => !input.endDate || input.endDate >= input.startDate, {
+    message: "endDate must not be before startDate",
+    path: ["endDate"],
+  });
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Project = z.infer<typeof projectSchema>;
+export type Experience = z.infer<typeof experienceSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 export type UpsertProjectInput = z.infer<typeof upsertProjectInputSchema>;
+export type UpsertExperienceInput = z.infer<typeof upsertExperienceInputSchema>;

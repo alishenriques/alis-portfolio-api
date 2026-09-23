@@ -1,4 +1,4 @@
-import type { Profile, Project } from "../schemas/domain.js";
+import type { Experience, Profile, Project } from "../schemas/domain.js";
 
 export const fallbackProfile: Profile = {
   id: "profile_local",
@@ -21,3 +21,6 @@ export const fallbackProjects: Project[] = [
     publishedAt: new Date().toISOString(),
   },
 ];
+
+// No placeholder made up here: real experience data comes from the CMS.
+export const fallbackExperiences: Experience[] = [];

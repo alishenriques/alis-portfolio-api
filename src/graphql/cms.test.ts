@@ -9,6 +9,11 @@ describe("CMS authorization", () => {
     ["updateProfile", `mutation { updateProfile(input: { name: "A", headline: "B", bio: "C" }) { id } }`],
     ["upsertProject", `mutation { upsertProject(input: ${project("a")}) { id } }`],
     ["deleteProject", `mutation { deleteProject(slug: "a") }`],
+    [
+      "upsertExperience",
+      `mutation { upsertExperience(input: { company: "C", role: "R", startDate: "2020-01", description: "D" }) { id } }`,
+    ],
+    ["deleteExperience", `mutation { deleteExperience(id: "a") }`],
     ["createUploadSignature", `mutation { createUploadSignature { signature } }`],
   ])("rejects %s without the CMS key", async (_name, query) => {
     const { gql } = await createTestApp();

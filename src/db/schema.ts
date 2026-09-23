@@ -22,6 +22,18 @@ export const projects = pgTable("projects", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const experiences = pgTable("experiences", {
+  id: text("id").primaryKey(),
+  company: text("company").notNull(),
+  companyLogoUrl: text("company_logo_url"),
+  role: text("role").notNull(),
+  // "YYYY-MM": LinkedIn/CVs rarely give a real day, so we don't fabricate one.
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date"),
+  description: text("description").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
 export const media = pgTable("media", {
   id: text("id").primaryKey(),
   publicId: text("public_id").notNull(),

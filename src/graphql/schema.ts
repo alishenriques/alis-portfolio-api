@@ -5,14 +5,16 @@ import { and, asc, desc, eq, isNotNull, lte } from "drizzle-orm";
 import { ZodError, type ZodType } from "zod";
 import type { AppContext } from "../context.js";
 import type { Database } from "../db/client.js";
-import { fallbackProfile, fallbackProjects } from "../db/fallback.js";
-import { profiles, projects } from "../db/schema.js";
+import { fallbackExperiences, fallbackProfile, fallbackProjects } from "../db/fallback.js";
+import { experiences, profiles, projects } from "../db/schema.js";
 import { signUpload } from "../lib/cloudinary.js";
 import {
+  experienceSchema,
   profileSchema,
   projectSchema,
   slugSchema,
   updateProfileInputSchema,
+  upsertExperienceInputSchema,
   upsertProjectInputSchema,
 } from "../schemas/domain.js";
 
@@ -39,6 +41,19 @@ export const typeDefs = /* GraphQL */ `
     publishedAt: String
   }
 
+  type Experience {
+    id: ID!
+    company: String!
+    companyLogoUrl: String
+    role: String!
+    "YYYY-MM"
+    startDate: String!
+    "YYYY-MM. Null means the role is current."
+    endDate: String
+    description: String!
+    sortOrder: Int!
+  }
+
   type UploadSignature {
     cloudName: String!
     apiKey: String!
@@ -53,6 +68,8 @@ export const typeDefs = /* GraphQL */ `
     "Published projects. With a valid x-cms-key, drafts are included."
     projects: [Project!]!
     project(slug: String!): Project
+    "Ordered by sortOrder, then most recent startDate first."
+    experiences: [Experience!]!
   }
 
   input UpdateProfileInput {
@@ -75,11 +92,26 @@ export const typeDefs = /* GraphQL */ `
     sortOrder: Int
   }
 
+  input UpsertExperienceInput {
+    "Omit to create a new experience; pass an existing id to edit it."
+    id: ID
+    company: String!
+    companyLogoUrl: String
+    role: String!
+    startDate: String!
+    endDate: String
+    description: String!
+    sortOrder: Int
+  }
+
   type Mutation {
     updateProfile(input: UpdateProfileInput!): Profile!
     "Creates or fully replaces the project with the given slug."
     upsertProject(input: UpsertProjectInput!): Project!
     deleteProject(slug: String!): Boolean!
+    "Creates a new experience, or updates one when input.id is given."
+    upsertExperience(input: UpsertExperienceInput!): Experience!
+    deleteExperience(id: ID!): Boolean!
     "Signed parameters for a direct browser upload to Cloudinary."
     createUploadSignature: UploadSignature!
   }
@@ -118,6 +150,7 @@ function parseInput<T>(schema: ZodType<T>, value: unknown): T {
 
 type ProfileRow = typeof profiles.$inferSelect;
 type ProjectRow = typeof projects.$inferSelect;
+type ExperienceRow = typeof experiences.$inferSelect;
 
 function toProfile(row: ProfileRow) {
   return profileSchema.parse({
@@ -140,6 +173,19 @@ function toProject(row: ProjectRow) {
     tags: row.tags,
     featured: row.featured,
     publishedAt: row.publishedAt?.toISOString() ?? null,
+  });
+}
+
+function toExperience(row: ExperienceRow) {
+  return experienceSchema.parse({
+    id: row.id,
+    company: row.company,
+    companyLogoUrl: row.companyLogoUrl,
+    role: row.role,
+    startDate: row.startDate,
+    endDate: row.endDate,
+    description: row.description,
+    sortOrder: row.sortOrder,
   });
 }
 
@@ -186,6 +232,17 @@ export const schema = createSchema<AppContext>({
           .where(and(...conditions))
           .limit(1);
         return row ? toProject(row) : null;
+      },
+      experiences: async (_, __, context) => {
+        if (!context.db) {
+          return fallbackExperiences.map((experience) => experienceSchema.parse(experience));
+        }
+
+        const rows = await context.db
+          .select()
+          .from(experiences)
+          .orderBy(asc(experiences.sortOrder), desc(experiences.startDate));
+        return rows.map(toExperience);
       },
     },
     Mutation: {
@@ -237,6 +294,37 @@ export const schema = createSchema<AppContext>({
         const db = requireDb(context);
 
         const deleted = await db.delete(projects).where(eq(projects.slug, slug)).returning({ id: projects.id });
+        return deleted.length > 0;
+      },
+      upsertExperience: async (_, args: { input: unknown }, context) => {
+        requireCms(context);
+        const input = parseInput(upsertExperienceInputSchema, args.input);
+        const db = requireDb(context);
+
+        const values = {
+          company: input.company,
+          companyLogoUrl: input.companyLogoUrl ?? null,
+          role: input.role,
+          startDate: input.startDate,
+          endDate: input.endDate ?? null,
+          description: input.description,
+          sortOrder: input.sortOrder,
+        };
+        const [row] = await db
+          .insert(experiences)
+          .values({ id: input.id ?? randomUUID(), ...values })
+          .onConflictDoUpdate({ target: experiences.id, set: values })
+          .returning();
+        return toExperience(row);
+      },
+      deleteExperience: async (_, args: { id: string }, context) => {
+        requireCms(context);
+        const db = requireDb(context);
+
+        const deleted = await db
+          .delete(experiences)
+          .where(eq(experiences.id, args.id))
+          .returning({ id: experiences.id });
         return deleted.length > 0;
       },
       createUploadSignature: (_, __, context) => {

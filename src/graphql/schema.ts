@@ -12,6 +12,7 @@ import {
   experienceSchema,
   profileSchema,
   projectSchema,
+  sendContactMessageInputSchema,
   slugSchema,
   updateProfileInputSchema,
   upsertExperienceInputSchema,
@@ -104,6 +105,14 @@ export const typeDefs = /* GraphQL */ `
     sortOrder: Int
   }
 
+  input SendContactMessageInput {
+    name: String!
+    email: String!
+    message: String!
+    "Honeypot — leave empty. Hidden from real visitors via CSS; a filled-in value silently no-ops."
+    website: String
+  }
+
   type Mutation {
     updateProfile(input: UpdateProfileInput!): Profile!
     "Creates or fully replaces the project with the given slug."
@@ -114,6 +123,8 @@ export const typeDefs = /* GraphQL */ `
     deleteExperience(id: ID!): Boolean!
     "Signed parameters for a direct browser upload to Cloudinary."
     createUploadSignature: UploadSignature!
+    "Public — no x-cms-key required. Sends the contact form to the site owner's inbox."
+    sendContactMessage(input: SendContactMessageInput!): Boolean!
   }
 `;
 
@@ -333,6 +344,33 @@ export const schema = createSchema<AppContext>({
           fail("Cloudinary is not configured", "CLOUDINARY_UNAVAILABLE");
         }
         return signUpload(context.cloudinary, context.env);
+      },
+      sendContactMessage: async (_, args: { input: unknown }, context) => {
+        const input = parseInput(sendContactMessageInputSchema, args.input);
+
+        // Honeypot tripped: report success without sending, so a bot can't
+        // tell detection from a real send.
+        if (input.website) {
+          return true;
+        }
+
+        if (!context.resend) {
+          fail("Email is not configured", "EMAIL_UNAVAILABLE");
+        }
+
+        const { error } = await context.resend.emails.send({
+          from: "Portfolio <onboarding@resend.dev>",
+          to: context.env.CONTACT_TO_EMAIL,
+          replyTo: input.email,
+          subject: `Novo contato de ${input.name}`,
+          text: `${input.message}\n\n— ${input.name} <${input.email}>`,
+        });
+
+        if (error) {
+          fail("Failed to send the message", "EMAIL_SEND_FAILED");
+        }
+
+        return true;
       },
     },
   },

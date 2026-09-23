@@ -6,6 +6,8 @@ export const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
+  CONTACT_TO_EMAIL: z.string().email().default("alishenriques@gmail.com"),
   PORT: z.coerce.number().int().positive().default(4000),
   CORS_ORIGIN: z.string().url().default("http://localhost:3000"),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -93,9 +95,22 @@ export const upsertExperienceInputSchema = z
     path: ["endDate"],
   });
 
+export const sendContactMessageInputSchema = z.object({
+  name: z.string().min(1).max(200),
+  email: z.string().email(),
+  message: z.string().min(1).max(5000),
+  // Honeypot: real visitors never see or fill this field (hidden via CSS on
+  // the form). A non-empty value means a bot filled every input it found.
+  // No length limit here on purpose: rejecting it with a validation error
+  // would tell a bot the honeypot exists. The resolver instead accepts it
+  // silently and just skips sending the email — same response either way.
+  website: z.string().optional().default(""),
+});
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 export type UpsertProjectInput = z.infer<typeof upsertProjectInputSchema>;
 export type UpsertExperienceInput = z.infer<typeof upsertExperienceInputSchema>;
+export type SendContactMessageInput = z.infer<typeof sendContactMessageInputSchema>;

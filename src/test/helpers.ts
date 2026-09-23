@@ -2,6 +2,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
+import type { Resend } from "resend";
 import { createApp } from "../app.js";
 import type { Database } from "../db/client.js";
 import * as schema from "../db/schema.js";
@@ -33,9 +34,12 @@ export async function createTestDatabase(): Promise<Database> {
   return db;
 }
 
-export async function createTestApp(options: { db?: Database | null; cms?: boolean } = {}) {
+export async function createTestApp(
+  options: { db?: Database | null; cms?: boolean; resend?: Resend | null } = {},
+) {
   const db = options.db === undefined ? await createTestDatabase() : options.db;
-  const app = createApp(testEnv, { db, cloudinary: createCloudinary(testEnv) });
+  const resend = options.resend ?? null;
+  const app = createApp(testEnv, { db, cloudinary: createCloudinary(testEnv), resend });
 
   async function gql<T = Record<string, unknown>>(
     query: string,

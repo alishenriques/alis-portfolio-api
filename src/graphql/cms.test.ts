@@ -93,6 +93,27 @@ describe("projects", () => {
     expect(result.data?.projects.map((p) => p.slug)).toEqual(["first", "second"]);
   });
 
+  it("saves and returns the timeline/detail-panel fields, defaulting isActive to true", async () => {
+    const { gql } = await createTestApp({ cms: true });
+    await gql(
+      `mutation { upsertProject(input: ${project(
+        "showcase",
+        'iconUrl: "https://example.com/icon.png", projectType: "E-Commerce", siteUrl: "https://example.com"',
+      )}) { id } }`,
+    );
+
+    const result = await gql<{
+      project: { iconUrl: string; projectType: string; siteUrl: string; isActive: boolean };
+    }>(`{ project(slug: "showcase") { iconUrl projectType siteUrl isActive } }`);
+
+    expect(result.data?.project).toEqual({
+      iconUrl: "https://example.com/icon.png",
+      projectType: "E-Commerce",
+      siteUrl: "https://example.com",
+      isActive: true,
+    });
+  });
+
   it("rejects an invalid slug", async () => {
     const { gql } = await createTestApp({ cms: true });
     const result = await gql(`mutation { upsertProject(input: ${project("Not A Slug")}) { id } }`);

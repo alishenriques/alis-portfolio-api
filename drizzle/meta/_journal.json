@@ -15,6 +15,13 @@
       "when": 1790122628078,
       "tag": "0001_daffy_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790543221353,
+      "tag": "0002_regular_sentry",
+      "breakpoints": true
     }
   ]
 }

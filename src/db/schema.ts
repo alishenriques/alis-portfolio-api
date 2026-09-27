@@ -16,6 +16,17 @@ export const projects = pgTable("projects", {
   summary: text("summary").notNull(),
   body: text("body").notNull(),
   coverUrl: text("cover_url"),
+  // Small square logo/mark for the Projetos timeline node — distinct from
+  // coverUrl (a full homepage screenshot, shown in the detail panel).
+  iconUrl: text("icon_url"),
+  // Free text on purpose (e.g. "E-Commerce"), not an enum: the set of project
+  // kinds isn't fixed yet and a DB migration per new category would be silly.
+  projectType: text("project_type"),
+  siteUrl: text("site_url"),
+  // Whether the live site is currently up — the small green "Site Ativo"
+  // indicator in the detail panel. Defaults true; a project only needs this
+  // flipped if/when its site goes offline.
+  isActive: boolean("is_active").notNull().default(true),
   tags: text("tags").array().notNull().default([]),
   featured: boolean("featured").notNull().default(false),
   publishedAt: timestamp("published_at", { withTimezone: true }),

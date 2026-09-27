@@ -37,6 +37,14 @@ export const typeDefs = /* GraphQL */ `
     summary: String!
     body: String!
     coverUrl: String
+    "Small square logo for the Projetos timeline node — distinct from coverUrl."
+    iconUrl: String
+    "Free text, e.g. 'E-Commerce' — not an enum, the set of kinds isn't fixed."
+    projectType: String
+    "The live site's URL — the detail panel's 'Visite o site' button."
+    siteUrl: String
+    "Whether the live site is currently up (the 'Site Ativo' indicator)."
+    isActive: Boolean!
     tags: [String!]!
     featured: Boolean!
     publishedAt: String
@@ -86,6 +94,10 @@ export const typeDefs = /* GraphQL */ `
     summary: String!
     body: String
     coverUrl: String
+    iconUrl: String
+    projectType: String
+    siteUrl: String
+    isActive: Boolean
     tags: [String!]
     featured: Boolean
     "ISO 8601. Null or omitted keeps the project as a draft."
@@ -181,6 +193,10 @@ function toProject(row: ProjectRow) {
     summary: row.summary,
     body: row.body,
     coverUrl: row.coverUrl,
+    iconUrl: row.iconUrl,
+    projectType: row.projectType,
+    siteUrl: row.siteUrl,
+    isActive: row.isActive,
     tags: row.tags,
     featured: row.featured,
     publishedAt: row.publishedAt?.toISOString() ?? null,
@@ -287,6 +303,10 @@ export const schema = createSchema<AppContext>({
           summary: input.summary,
           body: input.body,
           coverUrl: input.coverUrl ?? null,
+          iconUrl: input.iconUrl ?? null,
+          projectType: input.projectType ?? null,
+          siteUrl: input.siteUrl ?? null,
+          isActive: input.isActive,
           tags: input.tags,
           featured: input.featured,
           publishedAt: input.publishedAt ? new Date(input.publishedAt) : null,

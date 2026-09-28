@@ -46,6 +46,7 @@ export const typeDefs = /* GraphQL */ `
     "Whether the live site is currently up (the 'Site Ativo' indicator)."
     isActive: Boolean!
     tags: [String!]!
+    "At most one project should be featured at a time — it's the pinned/first pick on the About page's project showcase (pickShowcaseProjects, alis-portfolio)."
     featured: Boolean!
     publishedAt: String
   }

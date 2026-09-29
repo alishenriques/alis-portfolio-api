@@ -5,6 +5,8 @@ export const fallbackProfile: Profile = {
   name: "Alis",
   headline: "Interactive product engineer",
   bio: "Portfolio CMS is running in local fallback mode until Neon is connected.",
+  headlineEn: null,
+  bioEn: null,
   avatarUrl: null,
 };
 

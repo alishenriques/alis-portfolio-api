@@ -5,6 +5,11 @@ export const profiles = pgTable("profiles", {
   name: text("name").notNull(),
   headline: text("headline").notNull(),
   bio: text("bio").notNull(),
+  // English versions of headline/bio, for the /en locale. Nullable: the
+  // front-end falls back to the Portuguese text when unset, rather than
+  // requiring a translation to exist before headline/bio can be edited.
+  headlineEn: text("headline_en"),
+  bioEn: text("bio_en"),
   avatarUrl: text("avatar_url"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

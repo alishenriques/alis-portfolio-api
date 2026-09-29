@@ -8,6 +8,8 @@ describe("domain schemas", () => {
       name: "Alis",
       headline: "Product engineer",
       bio: "Builds interactive web experiences.",
+      headlineEn: null,
+      bioEn: null,
       avatarUrl: null,
     });
 

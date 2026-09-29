@@ -27,6 +27,10 @@ export const typeDefs = /* GraphQL */ `
     name: String!
     headline: String!
     bio: String!
+    "English version of headline, for the /en locale. Null falls back to headline."
+    headlineEn: String
+    "English version of bio, for the /en locale. Null falls back to bio."
+    bioEn: String
     avatarUrl: String
   }
 
@@ -86,6 +90,8 @@ export const typeDefs = /* GraphQL */ `
     name: String!
     headline: String!
     bio: String!
+    headlineEn: String
+    bioEn: String
     avatarUrl: String
   }
 
@@ -182,6 +188,8 @@ function toProfile(row: ProfileRow) {
     name: row.name,
     headline: row.headline,
     bio: row.bio,
+    headlineEn: row.headlineEn,
+    bioEn: row.bioEn,
     avatarUrl: row.avatarUrl,
   });
 }
@@ -283,6 +291,8 @@ export const schema = createSchema<AppContext>({
           name: input.name,
           headline: input.headline,
           bio: input.bio,
+          headlineEn: input.headlineEn ?? null,
+          bioEn: input.bioEn ?? null,
           avatarUrl: input.avatarUrl ?? null,
           updatedAt: new Date(),
         };

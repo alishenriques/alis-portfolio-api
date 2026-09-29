@@ -24,6 +24,8 @@ export const profileSchema = z.object({
   name: z.string().min(1),
   headline: z.string().min(1),
   bio: z.string().min(1),
+  headlineEn: z.string().nullable(),
+  bioEn: z.string().nullable(),
   avatarUrl: z.string().url().nullable(),
 });
 
@@ -47,6 +49,8 @@ export const updateProfileInputSchema = z.object({
   name: z.string().min(1),
   headline: z.string().min(1),
   bio: z.string().min(1),
+  headlineEn: z.string().nullable().optional(),
+  bioEn: z.string().nullable().optional(),
   avatarUrl: z.string().url().nullable().optional(),
 });
 

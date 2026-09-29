@@ -50,6 +50,27 @@ describe("profile", () => {
     expect(result.errors?.[0]?.extensions?.code).toBe("BAD_USER_INPUT");
     expect(result.errors?.[0]?.message).toContain("name");
   });
+
+  it("saves and returns headlineEn/bioEn, defaulting to null when omitted", async () => {
+    const { gql } = await createTestApp({ cms: true });
+    await gql(`mutation { updateProfile(input: { name: "A", headline: "H", bio: "B" }) { id } }`);
+
+    const withoutEn = await gql<{ profile: { headlineEn: string | null; bioEn: string | null } }>(
+      "{ profile { headlineEn bioEn } }",
+    );
+    expect(withoutEn.data?.profile).toEqual({ headlineEn: null, bioEn: null });
+
+    await gql(
+      `mutation { updateProfile(input: { name: "A", headline: "H", bio: "B", headlineEn: "Senior Front-End Developer", bioEn: "English bio." }) { id } }`,
+    );
+    const withEn = await gql<{ profile: { headlineEn: string | null; bioEn: string | null } }>(
+      "{ profile { headlineEn bioEn } }",
+    );
+    expect(withEn.data?.profile).toEqual({
+      headlineEn: "Senior Front-End Developer",
+      bioEn: "English bio.",
+    });
+  });
 });
 
 describe("projects", () => {

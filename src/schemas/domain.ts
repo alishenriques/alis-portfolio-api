@@ -88,6 +88,7 @@ export const experienceSchema = z.object({
   startDate: yearMonthSchema,
   endDate: yearMonthSchema.nullable(),
   description: z.string().min(1),
+  isCorporate: z.boolean(),
   sortOrder: z.number().int(),
 });
 
@@ -100,6 +101,7 @@ export const upsertExperienceInputSchema = z
     startDate: yearMonthSchema,
     endDate: yearMonthSchema.nullable().optional(),
     description: z.string().min(1),
+    isCorporate: z.boolean().default(true),
     sortOrder: z.number().int().default(0),
   })
   .refine((input) => !input.endDate || input.endDate >= input.startDate, {

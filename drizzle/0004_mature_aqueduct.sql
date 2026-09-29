@@ -1,0 +1,1 @@
+ALTER TABLE "experiences" ADD COLUMN "is_corporate" boolean DEFAULT true NOT NULL;

@@ -47,6 +47,10 @@ export const experiences = pgTable("experiences", {
   startDate: text("start_date").notNull(),
   endDate: text("end_date"),
   description: text("description").notNull(),
+  // True for a private-sector company role, false for public-sector/other
+  // work history (e.g. a government internship) — the "Corporativo" page
+  // filters to isCorporate only. Defaults true since most entries are.
+  isCorporate: boolean("is_corporate").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
 });
 

@@ -65,6 +65,8 @@ export const typeDefs = /* GraphQL */ `
     "YYYY-MM. Null means the role is current."
     endDate: String
     description: String!
+    "True for a private-sector company role; false for public-sector/other work history. The portfolio's Corporativo page filters to isCorporate only."
+    isCorporate: Boolean!
     sortOrder: Int!
   }
 
@@ -121,6 +123,7 @@ export const typeDefs = /* GraphQL */ `
     startDate: String!
     endDate: String
     description: String!
+    isCorporate: Boolean
     sortOrder: Int
   }
 
@@ -221,6 +224,7 @@ function toExperience(row: ExperienceRow) {
     startDate: row.startDate,
     endDate: row.endDate,
     description: row.description,
+    isCorporate: row.isCorporate,
     sortOrder: row.sortOrder,
   });
 }
@@ -350,6 +354,7 @@ export const schema = createSchema<AppContext>({
           startDate: input.startDate,
           endDate: input.endDate ?? null,
           description: input.description,
+          isCorporate: input.isCorporate,
           sortOrder: input.sortOrder,
         };
         const [row] = await db

@@ -8,6 +8,7 @@ type ExperienceInput = {
   startDate?: string;
   endDate?: string;
   description?: string;
+  isCorporate?: boolean;
   sortOrder?: number;
 };
 
@@ -96,6 +97,21 @@ describe("experiences", () => {
     const first = await gql<{ deleteExperience: boolean }>(`mutation { deleteExperience(id: "${id}") }`);
     const second = await gql<{ deleteExperience: boolean }>(`mutation { deleteExperience(id: "${id}") }`);
     expect([first.data?.deleteExperience, second.data?.deleteExperience]).toEqual([true, false]);
+  });
+
+  it("saves and returns isCorporate, defaulting to true", async () => {
+    const { gql } = await createTestApp({ cms: true });
+    const withDefault = await mutate<{ upsertExperience: { isCorporate: boolean } }>(
+      gql,
+      `mutation { upsertExperience(input: ${experience({ company: "Acme" })}) { isCorporate } }`,
+    );
+    expect(withDefault.upsertExperience.isCorporate).toBe(true);
+
+    const explicit = await mutate<{ upsertExperience: { isCorporate: boolean } }>(
+      gql,
+      `mutation { upsertExperience(input: ${experience({ company: "Gov", isCorporate: false })}) { isCorporate } }`,
+    );
+    expect(explicit.upsertExperience.isCorporate).toBe(false);
   });
 
   it("returns an empty list without a database", async () => {

@@ -1,8 +1,8 @@
 # alis-portfolio-api
 
-API GraphQL e CMS do [portfólio](https://github.com/alishenriques/alis-portfolio). Node + GraphQL Yoga + Drizzle ORM + Neon Postgres + Cloudinary, com validação Zod. Roda na Vercel como função serverless.
+API GraphQL e CMS do [portfólio](https://github.com/alishenriques/alis-portfolio) e, futuramente, do site de vendas de serviços autônomos. Node + GraphQL Yoga + Drizzle ORM + Neon Postgres + Cloudinary, com validação Zod. Roda na Vercel como função serverless.
 
-Arquitetura completa e convenções: [`docs/ai`](https://github.com/alishenriques/alis-portfolio/tree/main/docs/ai) no repositório principal.
+Arquitetura completa e convenções: [`docs/ai`](https://github.com/alishenriques/alis-portfolio/tree/main/docs/ai) no repositório principal. Mudanças grandes vão por PR detalhada e só entram na `main` com aprovação do Alisson.
 
 ## Rodando
 

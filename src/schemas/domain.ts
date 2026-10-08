@@ -9,7 +9,17 @@ export const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   CONTACT_TO_EMAIL: z.string().email().default("alishenriques@gmail.com"),
   PORT: z.coerce.number().int().positive().default(4000),
-  CORS_ORIGIN: z.string().url().default("http://localhost:3000"),
+  /** One origin or a comma-separated list (e.g. the Vercel URL plus a custom domain). */
+  CORS_ORIGIN: z
+    .string()
+    .default("http://localhost:3000")
+    .transform((value) =>
+      value
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.string().url()).min(1)),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 

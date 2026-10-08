@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { profileSchema, projectSchema, updateProfileInputSchema } from "./domain";
+import { loadEnv, profileSchema, projectSchema, updateProfileInputSchema } from "./domain";
 
 describe("domain schemas", () => {
   it("accepts a valid profile", () => {
@@ -38,5 +38,22 @@ describe("domain schemas", () => {
 
   it("requires CMS mutation fields", () => {
     expect(() => updateProfileInputSchema.parse({ name: "A" })).toThrow();
+  });
+
+  it("parses CORS_ORIGIN as a comma-separated list of origins", () => {
+    expect(loadEnv({}).CORS_ORIGIN).toEqual(["http://localhost:3000"]);
+    expect(
+      loadEnv({ CORS_ORIGIN: "https://alissonhenriques.dev, https://www.alissonhenriques.dev,https://alis-portfolio-three.vercel.app" })
+        .CORS_ORIGIN,
+    ).toEqual([
+      "https://alissonhenriques.dev",
+      "https://www.alissonhenriques.dev",
+      "https://alis-portfolio-three.vercel.app",
+    ]);
+  });
+
+  it("rejects an invalid CORS_ORIGIN entry", () => {
+    expect(() => loadEnv({ CORS_ORIGIN: "https://ok.dev,not-a-url" })).toThrow();
+    expect(() => loadEnv({ CORS_ORIGIN: " , " })).toThrow();
   });
 });

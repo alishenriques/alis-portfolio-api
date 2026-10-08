@@ -26,7 +26,7 @@ Sem `DATABASE_URL`, a API responde com dados de fallback.
 | `CMS_API_KEY` | Chave (mín. 8 caracteres) exigida no header `x-cms-key` nas mutations |
 | `CLOUDINARY_*` | Credenciais do Cloudinary (opcionais) |
 | `PORT` | Porta local (padrão 4000) |
-| `CORS_ORIGIN` | Origem permitida (padrão `http://localhost:3000`) |
+| `CORS_ORIGIN` | Origem permitida, ou lista separada por vírgula (padrão `http://localhost:3000`) |
 
 ## Operações do CMS
 

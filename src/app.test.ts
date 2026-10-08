@@ -23,3 +23,28 @@ describe("GraphQL app (fallback mode)", () => {
     expect(result.data.profile.name).toBe("Alis");
   });
 });
+
+describe("CORS", () => {
+  const corsApp = createApp(
+    loadEnv({ NODE_ENV: "test", CORS_ORIGIN: "https://alissonhenriques.dev,https://alis-portfolio-three.vercel.app" }),
+  );
+
+  async function preflight(origin: string) {
+    return corsApp.fetch("http://localhost/graphql", {
+      method: "OPTIONS",
+      headers: { origin, "access-control-request-method": "POST" },
+    });
+  }
+
+  it("allows every configured origin", async () => {
+    for (const origin of ["https://alissonhenriques.dev", "https://alis-portfolio-three.vercel.app"]) {
+      const response = await preflight(origin);
+      expect(response.headers.get("access-control-allow-origin")).toBe(origin);
+    }
+  });
+
+  it("does not allow an unknown origin", async () => {
+    const response = await preflight("https://evil.example");
+    expect(response.headers.get("access-control-allow-origin")).not.toBe("https://evil.example");
+  });
+});

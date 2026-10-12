@@ -95,9 +95,11 @@ export const experienceSchema = z.object({
   company: z.string().min(1),
   companyLogoUrl: z.string().url().nullable(),
   role: z.string().min(1),
+  roleEn: z.string().nullable(),
   startDate: yearMonthSchema,
   endDate: yearMonthSchema.nullable(),
   description: z.string().min(1),
+  descriptionEn: z.string().nullable(),
   isCorporate: z.boolean(),
   sortOrder: z.number().int(),
 });
@@ -108,9 +110,11 @@ export const upsertExperienceInputSchema = z
     company: z.string().min(1),
     companyLogoUrl: z.string().url().nullable().optional(),
     role: z.string().min(1),
+    roleEn: z.string().nullable().optional(),
     startDate: yearMonthSchema,
     endDate: yearMonthSchema.nullable().optional(),
     description: z.string().min(1),
+    descriptionEn: z.string().nullable().optional(),
     isCorporate: z.boolean().default(true),
     sortOrder: z.number().int().default(0),
   })

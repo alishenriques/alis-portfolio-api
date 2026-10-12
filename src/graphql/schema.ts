@@ -60,11 +60,15 @@ export const typeDefs = /* GraphQL */ `
     company: String!
     companyLogoUrl: String
     role: String!
+    "English version of role, for the /en locale. Null falls back to role."
+    roleEn: String
     "YYYY-MM"
     startDate: String!
     "YYYY-MM. Null means the role is current."
     endDate: String
     description: String!
+    "English version of description, for the /en locale. Null falls back to description."
+    descriptionEn: String
     "True for a private-sector company role; false for public-sector/other work history. The portfolio's Corporativo page filters to isCorporate only."
     isCorporate: Boolean!
     sortOrder: Int!
@@ -120,9 +124,11 @@ export const typeDefs = /* GraphQL */ `
     company: String!
     companyLogoUrl: String
     role: String!
+    roleEn: String
     startDate: String!
     endDate: String
     description: String!
+    descriptionEn: String
     isCorporate: Boolean
     sortOrder: Int
   }
@@ -221,9 +227,11 @@ function toExperience(row: ExperienceRow) {
     company: row.company,
     companyLogoUrl: row.companyLogoUrl,
     role: row.role,
+    roleEn: row.roleEn,
     startDate: row.startDate,
     endDate: row.endDate,
     description: row.description,
+    descriptionEn: row.descriptionEn,
     isCorporate: row.isCorporate,
     sortOrder: row.sortOrder,
   });
@@ -351,9 +359,11 @@ export const schema = createSchema<AppContext>({
           company: input.company,
           companyLogoUrl: input.companyLogoUrl ?? null,
           role: input.role,
+          roleEn: input.roleEn ?? null,
           startDate: input.startDate,
           endDate: input.endDate ?? null,
           description: input.description,
+          descriptionEn: input.descriptionEn ?? null,
           isCorporate: input.isCorporate,
           sortOrder: input.sortOrder,
         };

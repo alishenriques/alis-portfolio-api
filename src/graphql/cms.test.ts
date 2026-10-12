@@ -135,6 +135,30 @@ describe("projects", () => {
     });
   });
 
+  it("saves and returns summaryEn/bodyEn/projectTypeEn and sortOrder, defaulting the *En fields to null", async () => {
+    const { gql } = await createTestApp({ cms: true });
+    await gql(`mutation { upsertProject(input: ${project("plain")}) { id } }`);
+    await gql(
+      `mutation { upsertProject(input: ${project(
+        "translated",
+        'summaryEn: "Summary", bodyEn: "Body", projectTypeEn: "Online store", sortOrder: 3',
+      )}) { id } }`,
+    );
+
+    type Fields = { summaryEn: string | null; bodyEn: string | null; projectTypeEn: string | null; sortOrder: number };
+    const fields = "summaryEn bodyEn projectTypeEn sortOrder";
+    const plain = await gql<{ project: Fields }>(`{ project(slug: "plain") { ${fields} } }`);
+    const translated = await gql<{ project: Fields }>(`{ project(slug: "translated") { ${fields} } }`);
+
+    expect(plain.data?.project).toEqual({ summaryEn: null, bodyEn: null, projectTypeEn: null, sortOrder: 0 });
+    expect(translated.data?.project).toEqual({
+      summaryEn: "Summary",
+      bodyEn: "Body",
+      projectTypeEn: "Online store",
+      sortOrder: 3,
+    });
+  });
+
   it("rejects an invalid slug", async () => {
     const { gql } = await createTestApp({ cms: true });
     const result = await gql(`mutation { upsertProject(input: ${project("Not A Slug")}) { id } }`);

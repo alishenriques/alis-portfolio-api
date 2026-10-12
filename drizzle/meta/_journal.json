@@ -43,6 +43,13 @@
       "when": 1791812383292,
       "tag": "0005_strong_iron_monger",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791825259307,
+      "tag": "0006_first_sally_floyd",
+      "breakpoints": true
     }
   ]
 }

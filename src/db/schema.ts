@@ -43,10 +43,14 @@ export const experiences = pgTable("experiences", {
   company: text("company").notNull(),
   companyLogoUrl: text("company_logo_url"),
   role: text("role").notNull(),
+  // English versions of role/description, for the /en locale. Nullable, same
+  // as Profile.headlineEn/bioEn: the front-end falls back to the Portuguese.
+  roleEn: text("role_en"),
   // "YYYY-MM": LinkedIn/CVs rarely give a real day, so we don't fabricate one.
   startDate: text("start_date").notNull(),
   endDate: text("end_date"),
   description: text("description").notNull(),
+  descriptionEn: text("description_en"),
   // True for a private-sector company role, false for public-sector/other
   // work history (e.g. a government internship) — the "Corporativo" page
   // filters to isCorporate only. Defaults true since most entries are.

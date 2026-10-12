@@ -5,9 +5,11 @@ type ExperienceInput = {
   id?: string;
   company: string;
   role?: string;
+  roleEn?: string;
   startDate?: string;
   endDate?: string;
   description?: string;
+  descriptionEn?: string;
   isCorporate?: boolean;
   sortOrder?: number;
 };
@@ -112,6 +114,26 @@ describe("experiences", () => {
       `mutation { upsertExperience(input: ${experience({ company: "Gov", isCorporate: false })}) { isCorporate } }`,
     );
     expect(explicit.upsertExperience.isCorporate).toBe(false);
+  });
+
+  it("saves and returns roleEn/descriptionEn, defaulting to null when omitted", async () => {
+    const { gql } = await createTestApp({ cms: true });
+    const withoutEn = await mutate<{ upsertExperience: { id: string; roleEn: string | null; descriptionEn: string | null } }>(
+      gql,
+      `mutation { upsertExperience(input: ${experience({ company: "Acme" })}) { id roleEn descriptionEn } }`,
+    );
+    expect(withoutEn.upsertExperience).toMatchObject({ roleEn: null, descriptionEn: null });
+
+    const id = withoutEn.upsertExperience.id;
+    await mutate(
+      gql,
+      `mutation { upsertExperience(input: ${experience({ id, company: "Acme", roleEn: "Tech Lead", descriptionEn: "English description." })}) { id } }`,
+    );
+    const data = await mutate<{ experiences: { roleEn: string | null; descriptionEn: string | null }[] }>(
+      gql,
+      "{ experiences { roleEn descriptionEn } }",
+    );
+    expect(data.experiences).toEqual([{ roleEn: "Tech Lead", descriptionEn: "English description." }]);
   });
 
   it("returns an empty list without a database", async () => {

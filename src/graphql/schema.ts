@@ -39,12 +39,18 @@ export const typeDefs = /* GraphQL */ `
     slug: String!
     title: String!
     summary: String!
+    "English version of summary, for the /en locale. Null falls back to summary."
+    summaryEn: String
     body: String!
+    "English version of body, for the /en locale. Null falls back to body."
+    bodyEn: String
     coverUrl: String
     "Small square logo for the Projetos timeline node — distinct from coverUrl."
     iconUrl: String
     "Free text, e.g. 'E-Commerce' — not an enum, the set of kinds isn't fixed."
     projectType: String
+    "English version of projectType, for the /en locale. Null falls back to projectType."
+    projectTypeEn: String
     "The live site's URL — the detail panel's 'Visite o site' button."
     siteUrl: String
     "Whether the live site is currently up (the 'Site Ativo' indicator)."
@@ -53,6 +59,8 @@ export const typeDefs = /* GraphQL */ `
     "At most one project should be featured at a time — it's the pinned/first pick on the About page's project showcase (pickShowcaseProjects, alis-portfolio)."
     featured: Boolean!
     publishedAt: String
+    "Ascending; ties are broken by publishedAt, newest first. Exposed so a full-replace upsertProject can send it back unchanged."
+    sortOrder: Int!
   }
 
   type Experience {
@@ -105,10 +113,13 @@ export const typeDefs = /* GraphQL */ `
     slug: String!
     title: String!
     summary: String!
+    summaryEn: String
     body: String
+    bodyEn: String
     coverUrl: String
     iconUrl: String
     projectType: String
+    projectTypeEn: String
     siteUrl: String
     isActive: Boolean
     tags: [String!]
@@ -209,15 +220,19 @@ function toProject(row: ProjectRow) {
     slug: row.slug,
     title: row.title,
     summary: row.summary,
+    summaryEn: row.summaryEn,
     body: row.body,
+    bodyEn: row.bodyEn,
     coverUrl: row.coverUrl,
     iconUrl: row.iconUrl,
     projectType: row.projectType,
+    projectTypeEn: row.projectTypeEn,
     siteUrl: row.siteUrl,
     isActive: row.isActive,
     tags: row.tags,
     featured: row.featured,
     publishedAt: row.publishedAt?.toISOString() ?? null,
+    sortOrder: row.sortOrder,
   });
 }
 
@@ -324,10 +339,13 @@ export const schema = createSchema<AppContext>({
           slug: input.slug,
           title: input.title,
           summary: input.summary,
+          summaryEn: input.summaryEn ?? null,
           body: input.body,
+          bodyEn: input.bodyEn ?? null,
           coverUrl: input.coverUrl ?? null,
           iconUrl: input.iconUrl ?? null,
           projectType: input.projectType ?? null,
+          projectTypeEn: input.projectTypeEn ?? null,
           siteUrl: input.siteUrl ?? null,
           isActive: input.isActive,
           tags: input.tags,

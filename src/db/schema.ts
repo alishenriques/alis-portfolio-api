@@ -20,6 +20,11 @@ export const projects = pgTable("projects", {
   title: text("title").notNull(),
   summary: text("summary").notNull(),
   body: text("body").notNull(),
+  // English versions of summary/body/projectType, for the /en locale. Nullable,
+  // same as Experience.roleEn/descriptionEn: the front-end falls back to the
+  // Portuguese. No titleEn: titles are proper names (site/brand/event).
+  summaryEn: text("summary_en"),
+  bodyEn: text("body_en"),
   coverUrl: text("cover_url"),
   // Small square logo/mark for the Projetos timeline node — distinct from
   // coverUrl (a full homepage screenshot, shown in the detail panel).
@@ -27,6 +32,7 @@ export const projects = pgTable("projects", {
   // Free text on purpose (e.g. "E-Commerce"), not an enum: the set of project
   // kinds isn't fixed yet and a DB migration per new category would be silly.
   projectType: text("project_type"),
+  projectTypeEn: text("project_type_en"),
   siteUrl: text("site_url"),
   // Whether the live site is currently up — the small green "Site Ativo"
   // indicator in the detail panel. Defaults true; a project only needs this
